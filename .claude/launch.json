@@ -1,0 +1,10 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "imcs-frontend",
+      "port": 8080,
+      "url": "http://localhost:8080"
+    }
+  ]
+}
