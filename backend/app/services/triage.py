@@ -56,7 +56,10 @@ async def run_triage_turn(db: AsyncSession, session: TriageSession, user_text: s
     except llm.LlmError:
         result = rule_based_triage(user_text, departments)
         session.result_json = result.model_dump(); session.status = TriageStatus.completed
-        reply = f"（AI 服务暂时不可用，已启用规则分诊）建议科室：{result.department}。{result.advice}"
+        if llm.is_llm_configured():
+            reply = f"（AI 服务暂时不可用，已启用规则分诊）建议科室：{result.department}。{result.advice}"
+        else:
+            reply = f"（智能分诊未启用：系统未配置 AI 服务，当前为规则模式）建议科室：{result.department}。{result.advice}"
         db.add(TriageMessage(session_id=session.id, role="assistant", content=reply)); await db.commit()
         yield {"type": "delta", "content": reply}; yield {"type": "result", "result": result.model_dump()}; yield {"type": "done"}; return
     result = parse_result(full)

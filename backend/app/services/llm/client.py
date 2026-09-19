@@ -11,6 +11,10 @@ from app.services.llm.budget import check_budget, consume_budget
 class LlmError(Exception): pass
 class BudgetExceeded(LlmError): pass
 
+def is_llm_configured() -> bool:
+    """检查是否配置了至少一个可用的 LLM API Key。"""
+    return bool(settings.LLM_API_KEY.strip()) or bool(settings.LLM_FALLBACK_API_KEY.strip())
+
 @dataclass
 class Provider:
     base_url: str; api_key: str; model: str
